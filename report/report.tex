@@ -1,0 +1,79 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+%If you want to title your bold things something different just make another thing exactly like this but replace "problem" with the name of the thing you want, like theorem or lemma or whatever
+\newcommand{\vc}[1]{\boldsymbol{#1}}
+\newcommand{\nm}[1]{\left\lVert\vc{#1}\right\rVert}
+
+\begin{document}
+
+%\renewcommand{\qedsymbol}{\filledbox}
+%Good resources for looking up how to do stuff:
+%Binary operators: http://www.access2science.com/latex/Binary.html
+%General help: http://en.wikibooks.org/wiki/LaTeX/Mathematics
+%Or just google stuff
+
+\title{CS483/ECE408 report}
+\author{Guohao Dou(gdou2), Liyu Liu(lliu79), Qichao Gao(qgao10)}
+\maketitle
+
+\section{Milestone 1}
+\subsection{a list of all kernels that collectively consume more than 90\% of the program time}
+\begin{itemize}
+    \item fermiPlusCgemmLDS128\_batched: 34.09\%
+    \item cudnn::detail::implicit\_convolve\_sgemm: 27.01\%
+    \item fft2d\_c2r\_32x32: 12.65\%
+    \item sgemm\_sm35\_ldg\_tn\_128x8x256x16x32: 8.20\%
+    \item CUDA memcpy HtoD: 6.43\%
+    \item cudnn::detail::activation\_fw\_4d\_kernel: 4.07\%
+\end{itemize}
+\textbf{Total: } 92.45\%
+
+\subsection{a list of all CUDA API calls that collectively consume more than 90\% of the program time.}
+\begin{itemize}
+    \item cudaStreamCreateWithFlags: 37.37\%
+    \item cudaFree: 29.25\%
+    \item cudaMemGetInfo: 23.42\%
+\end{itemize}
+\textbf{Total: } 90.01\%
+
+\subsection{an explanation of the difference between kernels and API calls}
+Kernels are the code that will be run by GPU threads. It's usually launched on the host. It does the actual computation.\\
+API calls are utilities provided by CUDA to do chores like memory allocation on GPU and data transfer e.t.c. Their names are usually started by 'cuda'.
+
+\subsection{output of rai running MXNet on the CPU}
+✱ Running /usr/bin/time python m1.1.py\\
+Loading fashion-mnist data...\\
+done\\
+Loading model...\\
+done\\
+New Inference\\
+EvalMetric: \{'accuracy': 0.8444\}\\
+12.48user 6.36system 0:08.40elapsed 224\%CPU (0avgtext+0avgdata 2829772maxresident)k\\
+0inputs+2624outputs (0major+38196minor)pagefaults 0swaps\\
+
+\subsection{List program run time}
+8.40 sec.
+
+\subsection{output of rai running MXNet on the GPU}
+✱ Running /usr/bin/time python m1.2.py\\
+Loading fashion-mnist data...\\
+done\\
+Loading model...\\
+\,21:36:15\, src/operator/././cudnn\_algoreg-inl.h:112: Running performance tests to find the best convolution algorithm, this can take a while... (setting env variable MXNET\_CUDNN\_AUTOTUNE\_DEFAULT to 0 to disable)\\
+done\\
+New Inference\\
+EvalMetric: {'accuracy': 0.8444}\\
+2.14user 1.08system 0:02.70elapsed 119\%CPU (0avgtext+0avgdata 1137876maxresident)k\\
+0inputs+512outputs (0major+156089minor)pagefaults 0swaps\\
+
+\subsection{List program run time}
+2.7 secs. (faster than CPU)
+
+\end{document}

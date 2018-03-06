@@ -1,1 +1,4 @@
 *.pyc
+.idea
+report/*
+!report/report.tex

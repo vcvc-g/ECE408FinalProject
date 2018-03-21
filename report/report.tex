@@ -1,6 +1,8 @@
 \documentclass[12pt]{article}
 \usepackage[margin=1in]{geometry} 
 \usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage{graphicx}
+\graphicspath{ {.} }
 
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
@@ -75,5 +77,29 @@ EvalMetric: {'accuracy': 0.8444}\\
 
 \subsection{List program run time}
 2.7 secs. (faster than CPU)
+
+\section{Milestone 2}
+
+\subsection{List whole program execution time}
+\begin{center}
+    \begin{tabular}{ c | c | c }
+    Data Size & Exe Time(sec) & Correctness\\ 
+    \hline    
+    10000 & 6.606187 + 19.458934 = 26.065121 & 0.8451\\  
+    100 & 0.065310 + 0.193691 = 0.259001 & 0.88\\
+    10 & 0.006623 + 0.019393 = 0.026016 & 1.0
+    \end{tabular}
+\end{center}
+
+\subsection{List Op Times}
+\begin{center}
+    \begin{tabular}{ c | c | c }
+    Data Size & Layer 1 Exe Time(sec) & Layer 2 Exe Time(sec)\\ 
+    \hline    
+    10000 & 6.606187 & 19.458934\\  
+    100 & 0.065310 & 0.193691\\
+    10 & 0.006623 & 0.019393
+    \end{tabular}
+\end{center}
 
 \end{document}

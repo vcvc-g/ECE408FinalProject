@@ -9,7 +9,7 @@ namespace mxnet
 {
 namespace op
 {
-#define TILE_WIDTH 2
+#define TILE_WIDTH 16
 
         __global__ void forward_kernel(float *y, const float *x, const float *k, const int B, const int M, const int C, const int H, const int W, const int K)
 {
@@ -41,12 +41,11 @@ namespace op
 #define x4d(i3, i2, i1, i0) x[(i3) * (C * H * W) + (i2) * (H * W) + (i1) * (W) + i0]
 #define k4d(i3, i2, i1, i0) k[(i3) * (C * K * K) + (i2) * (K * K) + (i1) * (K) + i0]
 
-    const int W_grid = ceil((float)(W_out) / TILE_WIDTH);
-    const int H_grid = ceil((float)(H_out) / TILE_WIDTH);
+    const int W_grid = ceil(((float)(W_out)) / TILE_WIDTH);
 
     const int batch = blockIdx.x;
     const int out_map = blockIdx.y;
-    const int h = blockDim.y * blockIdx.z / W_grid + threadIdx.y;
+    const int h = blockDim.y * (blockIdx.z / W_grid) + threadIdx.y;
     const int w = blockDim.x * (blockIdx.z % W_grid) + threadIdx.x;
 
     if (h < H_out && w < W_out) {
@@ -91,15 +90,15 @@ void forward<gpu, float>(mshadow::Tensor<gpu, 4, float> &y, const mshadow::Tenso
     // Set the kernel dimensions
     const int H_out = H - K + 1;
     const int W_out = W - K + 1;
-    const int W_grid = ceil((float)(W_out) / TILE_WIDTH);
-    const int H_grid = ceil((float)(H_out) / TILE_WIDTH);
+    const int H_grid = ceil(((float)(H_out)) / TILE_WIDTH);
+    const int W_grid = ceil(((float)(W_out)) / TILE_WIDTH);
+
     const int Z = H_grid * W_grid;
 
     dim3 gridDim(B, M, Z);
-    dim3 blockDim(TILE_WIDTH, TILE_WIDTH, 1);
+    dim3 blockDim(TILE_WIDTH, TILE_WIDTH);
 
     // Call the kernel
-//    forward_kernel<<<gridDim, blockDim, 0, s>>>(y.dptr_,x.dptr_,w.dptr_, B,M,C,H,W,K);
     forward_kernel<<<gridDim, blockDim>>>(y.dptr_,x.dptr_,w.dptr_, B,M,C,H,W,K);
     cudaError_t err = cudaGetLastError();
     if ( cudaSuccess != err )

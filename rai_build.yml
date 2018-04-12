@@ -15,6 +15,6 @@ commands:
     - /bin/bash -c "for src in ece408_src/*; do cp -v $src /mxnet/src/operator/custom/.; done" # copy source files to mxnet tree
     - nice -n20 make -C /mxnet # build mxnet
     - pip2 install --user -e /mxnet/python   # install python bindings
-    - /usr/bin/time python m2.1.py 10000
-    - /usr/bin/time python m2.1.py 100
-    - /usr/bin/time python m2.1.py 10
+    - python m3.1.py
+#    - python m3.1.py 1000
+#    - python m3.1.py 100
